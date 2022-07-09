@@ -2,9 +2,8 @@
 #include <algorithm>
 #include <math.h>
 using namespace std;
-#define ll long long int
 
-//مستطیل بد متوسط
+#define ll long long int
 
 int main()
 {

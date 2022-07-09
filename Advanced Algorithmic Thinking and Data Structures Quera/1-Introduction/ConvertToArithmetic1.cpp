@@ -1,8 +1,6 @@
 ﻿#include <iostream>
 using namespace std;
 
-//تبدیل به حسابی ۱
-
 int main()
 {
 	int n, k;
@@ -37,5 +35,4 @@ int main()
 
 	delete[] a;
 	delete[] b;
-
 }

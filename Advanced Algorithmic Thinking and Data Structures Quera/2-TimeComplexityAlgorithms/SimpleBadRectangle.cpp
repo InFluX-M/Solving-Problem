@@ -1,8 +1,7 @@
 ﻿#include <iostream>
 using namespace std;
-#define ll long long int
 
-//مستطیل بد ساده
+#define ll long long int
 
 int main()
 {
