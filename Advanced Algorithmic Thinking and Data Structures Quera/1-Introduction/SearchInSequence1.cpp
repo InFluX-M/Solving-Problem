@@ -1,8 +1,6 @@
 ﻿#include <iostream>
 using namespace std;
 
-//جست‌وجو در دنباله ۱
-
 int main()
 {
     int n, q;

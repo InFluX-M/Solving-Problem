@@ -1,8 +1,7 @@
 ﻿#include <iostream>
 using namespace std;
-#define ll long long int
 
-//نیمه مرتب
+#define ll long long int
 
 int main()
 {
