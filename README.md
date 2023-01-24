@@ -1,6 +1,9 @@
 # Solving-Problem
 Solve Algorithmic Question 
 
-Advanced Algorithmic Thinking and DataStructure: https://quera.org/college/land/college/3016
+Total Solve: 138
 
-CodeForces: https://codeforces.com
+https://codeforces.com
+https://practice.geeksforgeeks.org
+https://quera.org
+https://leetcode.com
