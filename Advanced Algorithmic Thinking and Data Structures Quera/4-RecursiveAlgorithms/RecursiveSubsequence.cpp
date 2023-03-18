@@ -21,7 +21,6 @@ int f(int n)
         return 5;
     }
 
-    cout << a[n - 1];
     if (a[n - 1] == 0)  a[n - 1] = f(n - 1);
 
     if (n % 2 == 0) return a[n - 1] - 21;

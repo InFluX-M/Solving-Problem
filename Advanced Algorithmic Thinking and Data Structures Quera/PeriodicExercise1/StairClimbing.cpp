@@ -25,8 +25,23 @@ int main()
 {
 	int n;
 	cin >> n;
-	solve(n);
-	cout << k;
+	// solve(n);
+
+	int a[n];
+	fill_n(a, n, 0);
+	a[0] = 1;
+	a[1] = 2;
+	a[2] = 3;
+	a[3] = 5;
+	a[4] = 9;
+
+	for (int i = 5; i < n; i++)
+	{
+		a[i] = a[i-5] + a[i-2] + a[i-1];
+	}
+	
+	// cout << k;
+	cout << a[n-1];
 }
 
 void solve(int n)
@@ -43,3 +58,11 @@ void solve(int n)
 	solve(n - 5);
 
 }
+
+// 1 1 1 1 1
+// 1 1 1 2
+// 1 2 2 
+// 1 2 1 1
+// 1 1 2 1
+// 2 2 1
+// 2 1 1 1

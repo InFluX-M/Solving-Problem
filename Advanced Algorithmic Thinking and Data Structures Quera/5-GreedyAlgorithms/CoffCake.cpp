@@ -20,9 +20,31 @@ int main()
 		vc.push_back(t);
 	}
 
-	if (k == 1) cout << max_vec(vc);
-	else if (k > 2) cout << min_vec(vc);
-	else cout << min(vc[0], vc[n - 1]);
+	if (k == 1)
+		cout << max_vec(vc);
+	else if (k > 2)
+		cout << min_vec(vc);
+	else
+	{
+		int aim = 5000;
+		for (int i = 1; i < n; i++)
+		{
+			int maxR = vc[n - 1], maxL = vc[0];
+
+			for (int j = 0; j < i; j++)
+			{
+				maxL = max(maxL, vc[j]);
+			}
+			for (int j = i; j < n; j++)
+			{
+				maxR = max(maxR, vc[j]);
+			}
+
+			aim = min(aim, min(maxR, maxL));
+		}
+
+		cout << aim;
+	}
 
 	cout << "\n";
 }
