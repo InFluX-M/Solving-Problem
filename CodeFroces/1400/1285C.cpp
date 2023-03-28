@@ -15,7 +15,10 @@ const ll mod = 1e9 + 7;
 #pragma GCC optimize("unroll-loops")
 #pragma GCC target("avx2")
 
-#define fastio ios_base::sync_with_stdio(false); cin.tie(NULL); cout.tie(NULL);
+#define fastio                        \
+    ios_base::sync_with_stdio(false); \
+    cin.tie(NULL);                    \
+    cout.tie(NULL);
 #define pb push_back
 #define mp make_pair
 #define all(x) x.begin(), x.end()
@@ -39,31 +42,28 @@ ll sum(ll a, ll b)
     return ((a % mod) + (b % mod)) % mod;
 }
 
+ll lcm(ll a, ll b)
+{
+    return a * b / __gcd(a, b);
+}
+
 int main()
 {
-    fastio
-    int n, k;
-    cin >> n >> k;
+    fastio;
 
-    vi h(n);
-    for (int i = 0; i < n; i++)
-        cin >> h[i];
+    ll x;
+    cin >> x;
 
-    int sums[n];
-    sums[0] = h[0];
-    for (int i = 1; i < n; i++)
-        sums[i] = sums[i - 1] + h[i];
-
-    int ans = sums[k - 1];
-    int ix = 0;
-
-    for (int i = 1; i <= n - k; i++)
-        if (ans > sums[i + k - 1] - sums[i - 1])
+    ll ans;
+    for (ll i = 1; i * i <= x; i++)
+    {
+        if (x % i == 0 && lcm(i, x / i) == x)
         {
-            ans = sums[i + k - 1] - sums[i - 1];
-            ix = i;
-        }   
+            ans = i;
+        }
+    }
 
-    cout << ix + 1;
+    cout << ans << " " << x / ans;
+
     return 0;
 }

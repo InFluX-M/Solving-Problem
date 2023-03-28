@@ -47,15 +47,11 @@ int main()
     {
         if (s[i] == 'A' && s[i + 1] == 'B' && s[i + 2] == 'A')
         {
-            if (i == n - 3)
-                fg = true;
             aba++;
             i += 2;
         }
         else if (s[i] == 'B' && s[i + 1] == 'A' && s[i + 2] == 'B')
         {
-            if (i == n - 3)
-                fg = true;
             aba++;
             i += 2;
         }
@@ -63,12 +59,7 @@ int main()
             s1.push_back(s[i]);
     }
 
-    if (!fg)
-    {
-        s1.push_back(s[n - 2]);
-        s1.push_back(s[n - 1]);
-    }
-    else if (i != n && i != n - 1 && i != n - 2 && n >= 2)
+    if (i != n && i != n - 1)
     {
         s1.push_back(s[n - 2]);
         s1.push_back(s[n - 1]);
