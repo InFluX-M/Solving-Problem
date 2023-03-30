@@ -42,7 +42,7 @@ ll sum(ll a, ll b)
     return ((a % mod) + (b % mod)) % mod;
 }
 
-string infixToPostfix(string infix)
+string infixToPrefix(string infix)
 {
     unordered_map<char, int> op;
     op['+'] = 1;
@@ -56,13 +56,13 @@ string infixToPostfix(string infix)
     stack<char> s;
 
     string postfix = "";
-    for (int i = 0; i < infix.length(); i++)
+    for (int i = infix.length() - 1; i >= 0; i--)
     {
         if (op.find(infix[i]) != op.end())
         {
-            if (infix[i] == ')')
+            if (infix[i] == '(')
             {
-                while (!s.empty() && s.top() != '(')
+                while (!s.empty() && s.top() != ')')
                 {
                     postfix.push_back(s.top());
                     s.pop();
@@ -89,6 +89,7 @@ string infixToPostfix(string infix)
         s.pop();
     }
 
+    reverse(postfix.begin(), postfix.end());
     return postfix;
 }
 
@@ -99,6 +100,6 @@ int main()
     string in;
     cin >> in;
 
-    cout << infixToPostfix(in);
+    cout << infixToPrefix(in);
     return 0;
 }

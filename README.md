@@ -1,7 +1,7 @@
 # Solving-Problem
 Solve Algorithmic Question 
 
-Total Solve: 138
+Total Solve: 275
 
 https://codeforces.com
 
