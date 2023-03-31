@@ -45,25 +45,22 @@ ll sum(ll a, ll b)
 int main()
 {
     fastio;
-    int n;
-    cin >> n;
 
-    int a[n];
-    for (int i = 0; i < n; i++)
-        cin >> a[i];
+    map<string, int> res;
 
-    ll ans = 0;
-    ll sum = 0;
-    for (int i = 0; i < n; i++)
+    int n = 0;
+    string s;
+    while (getline(cin, s))
     {
-        if (sum + a[i] >= 0)
-        {
-            ans++;
-            sum += a[i];
-        }
-        
+        if (s.empty())
+            break;
+        res[s]++;
+        n++;
     }
 
-    cout << ans;
+    for (pair<string, int> u : res)
+    {
+        cout << u.first << " " << fixed << showpoint << setprecision(6) << 1.0 * u.second / n * 100 << "\n";
+    }
     return 0;
 }

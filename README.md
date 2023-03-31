@@ -1,12 +1,10 @@
 # Solving-Problem
 Solve Algorithmic Question 
 
-Total Solve: 275
+Total Solve: 279
 
-https://codeforces.com
-
-https://practice.geeksforgeeks.org
-
-https://quera.org
-
-https://leetcode.com
+https://codeforces.com -> 64-Solutions
+https://practice.geeksforgeeks.org -> 23-Solutions
+https://quera.org -> 128-Solutions
+https://open.kattis.com/ -> 14-Solutions
+Contests -> 50-Solutions
