@@ -11,7 +11,6 @@ typedef vector<string> vector_string;
 typedef vector<char> vector_char;
 typedef vector<bool> vector_bool;
 
-
 int main()
 {
 	vector<set<ll>> slv;
@@ -25,7 +24,6 @@ int main()
 		t.insert(i + 1);
 		slv.push_back(t);
 	}
-
 
 	while (q--)
 	{
@@ -50,8 +48,9 @@ int main()
 			cin >> i;
 			if (slv[i - 1].size())
 			{
-				for (ll temp : slv[i - 1]) cout << temp << " ";
-				cout<<"\n";
+				for (ll temp : slv[i - 1])
+					cout << temp << " ";
+				cout << "\n";
 			}
 			else
 			{
@@ -59,4 +58,5 @@ int main()
 			}
 		}
 	}
+	
 }

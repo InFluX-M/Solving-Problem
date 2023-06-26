@@ -1,60 +1,63 @@
-#include <iostream>
-#include <algorithm>
-#include <vector>
-#include <set>
-#include <numeric>
+#include <bits/stdc++.h>
 using namespace std;
 
-typedef long long int ll;
-typedef vector<ll> vector_ll;
-typedef vector<string> vector_string;
-typedef vector<char> vector_char;
-typedef vector<bool> vector_bool;
+typedef string str;
+typedef long long ll;
+typedef long double ld;
+typedef pair<int, int> pii;
+typedef pair<ll, ll> pll;
+typedef vector<int> vi;
+typedef vector<ll> vl;
 
-#define find_vec(vec, item, first_index, last_index) find(vec.begin()+first_index, vec.begin()+last_index+1, item) != vec.end()
-#define destroy_vec(vec) vec.~vector()
-#define erace_item_vec(vec, index) vec.erase(vec.begin() + index)
-#define erace_range_vec(vec, first_index, last_index) vec.erase(vec.begin() + indexS, vec.end() - indexE)
-#define max_vec(vec, first_index, last_index) *max_element(vec.begin()+first_index, vec.begin()+last_index+1)
-#define min_vec(vec, first_index, last_index) *min_element(vec.begin()+first_index, vec.begin()+last_index+1)
-#define sum_vec(vec, first_index, last_index) accumulate(vec.begin()+first_index, vec.begin()+last_index+1, 0)
+const ll MOD = 1e9 + 7;
+
+#define fastio                        \
+	ios_base::sync_with_stdio(false); \
+	cin.tie(NULL);                    \
+	cout.tie(NULL);
+#define pb push_back
+#define mp make_pair
+#define all(x) x.begin(), x.end()
+#define rall(x) x.rbegin(), x.rend()
+#define sz(x) (int)x.size()
+#define F first
+#define S second
+
+ll modOp(ll a, ll b, int op)
+{
+	switch (op)
+	{
+	case 0:
+		return ((a % MOD) + (b % MOD)) % MOD;
+	case 1:
+		return ((a % MOD) - (b % MOD) + MOD) % MOD;
+	case 2:
+		return (a % MOD) * (b % MOD) % MOD;
+	}
+}
 
 int main()
 {
-	int n;
-	int q;
+	fastio;
 
+	int n, q;
 	cin >> n >> q;
 
-	vector_ll a;
+	vi a(n);
+	vl ps(n);
+
 	for (int i = 0; i < n; i++)
 	{
-		ll t;
-		cin >> t;
-		a.push_back(t);
-	}
-
-	vector_ll slv;
-	slv.push_back(0);
-	for (int i = 1; i <= n; i++)
-	{
-		slv.push_back(slv[i - 1] + a[i - 1]);
+		cin >> a[i];
+		ps[i] = (i == 0) ? a[i] : a[i] + ps[i - 1];
 	}
 
 	while (q--)
 	{
-		ll r, l;
-		cin >> r >> l;
-
-		if (r == 0)
-		{
-			cout << slv[l + 1] << "\n";
-		}
-		else
-		{
-			cout << slv[l + 1] - slv[r] << "\n";
-		}
+		int l, r;
+		cin >> l >> r;
+		cout << (l == 0) ? ps[r] : ps[r] - ps[l - 1] << '\n';
 	}
 
+	return 0;
 }
-
