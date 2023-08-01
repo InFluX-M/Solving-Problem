@@ -8,9 +8,8 @@
 # Or directories
 !*/
 !.gitignore
-/Perfect
-/Unsolved
-/Upsolve
 guide.py
-
+Upsolve
+Prfect
+Contests
 !README.md

@@ -6,31 +6,35 @@ int main()
     int n;
     cin >> n;
     int a[n];
+    int c[4];
+    fill_n(c, 4, 0);
+
     for (int i = 0; i < n; i++)
     {
         cin >> a[i];
+        c[a[i] - 1]++;
     }
-    sort(a, a+n);
 
-    int sum = 0;
     int ans = 0;
 
-    for (int i = 0; i < n-1; i++)
-    {
-        sum += a[i];
+    ans += c[3];
+    c[3] = 0;
 
-        if(sum+a[i+1] > 4)
-        {
-            ans++;
-            sum = 0;
-        }
+    c[0] -= c[2];
+    ans += c[2];
+
+    ans += c[1] / 2;
+    c[1] %= 2;
+
+    if (c[1])
+    {
+        c[0] -= 2;
+        ans++;
     }
 
-    if(sum+a[n-1] > 4)
-        ans+=2;
-    else
-        ans++;
-        
+    if (c[0] > 0)
+        ans += c[0] / 4 + (c[0] % 4 != 0);
+
     cout << ans << endl;
     return 0;
 }
