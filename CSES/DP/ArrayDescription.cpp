@@ -40,62 +40,46 @@ ll modOp(ll a, ll b, int op)
 
 void solve()
 {
-    int n;
-    cin >> n;
+    int n, m;
+    cin >> n >> m;
 
-    vi s(n);
+    vl s(n);
     for (int i = 0; i < n; i++)
-    {
         cin >> s[i];
-    }
 
-    vector<vector<ll>> dp(3, vl(n, INT_MAX));
-    if (s[0] == 0)
-    {
-        dp[0][0] = 1;
-    }
-    else if (s[0] == 1)
-    {
-        dp[0][0] = 1;
-        dp[1][0] = 0;
-    }
-    else if (s[0] == 2)
-    {
-        dp[0][0] = 1;
-        dp[2][0] = 0;
-    }
+    vector<vl> dp(n, vl(m + 2, 0));
+
+    if (s[0] != 0)
+        dp[0][s[0]] = 1;
     else
-    {
-        dp[0][0] = 1;
-        dp[1][0] = 0;
-        dp[2][0] = 0;
-    }
+        for (int j = 1; j <= m; j++)
+            dp[0][j] = 1;
 
     for (int i = 1; i < n; i++)
     {
-        if (s[i] == 0)
+        if (s[i] != 0)
         {
-            dp[0][i] = min(dp[1][i - 1], min(dp[0][i - 1], dp[2][i - 1])) + 1;
-        }
-        else if (s[i] == 1)
-        {
-            dp[0][i] = min(dp[1][i - 1], min(dp[0][i - 1], dp[2][i - 1])) + 1;
-            dp[1][i] = min(dp[0][i - 1], dp[2][i - 1]);
-        }
-        else if (s[i] == 2)
-        {
-            dp[0][i] = min(dp[1][i - 1], min(dp[0][i - 1], dp[2][i - 1])) + 1;
-            dp[2][i] = min(dp[0][i - 1], dp[1][i - 1]);
+            dp[i][s[i]] = dp[i - 1][s[i] - 1] + dp[i - 1][s[i]] + dp[i - 1][s[i] + 1];
+            dp[i][s[i]] %= MOD;
         }
         else
         {
-            dp[0][i] = min(dp[1][i - 1], min(dp[0][i - 1], dp[2][i - 1])) + 1;
-            dp[1][i] = min(dp[0][i - 1], dp[2][i - 1]);
-            dp[2][i] = min(dp[0][i - 1], dp[1][i - 1]);
+            for (int j = 1; j <= m; j++)
+            {
+                dp[i][j] = dp[i - 1][j - 1] + dp[i - 1][j] + dp[i - 1][j + 1];
+                dp[i][j] %= MOD;
+            }
         }
     }
 
-    cout << min(dp[0][n - 1], min(dp[1][n - 1], dp[2][n - 1]));
+    ll res = 0;
+    for (int j = 1; j <= m; j++)
+    {
+        res += dp[n - 1][j];
+        res %= MOD;
+    }
+
+    cout << res;
 }
 
 int32_t main()

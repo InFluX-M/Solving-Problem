@@ -45,57 +45,40 @@ void solve()
 
     vi s(n);
     for (int i = 0; i < n; i++)
-    {
         cin >> s[i];
-    }
 
-    vector<vector<ll>> dp(3, vl(n, INT_MAX));
-    if (s[0] == 0)
+    vector<ll> dp(n + 1, 0);
+    dp[0] = 1;
+    for (int i = 1; i <= n; i++)
     {
-        dp[0][0] = 1;
-    }
-    else if (s[0] == 1)
-    {
-        dp[0][0] = 1;
-        dp[1][0] = 0;
-    }
-    else if (s[0] == 2)
-    {
-        dp[0][0] = 1;
-        dp[2][0] = 0;
-    }
-    else
-    {
-        dp[0][0] = 1;
-        dp[1][0] = 0;
-        dp[2][0] = 0;
-    }
+        vector<int> divisor;
+        for (int k = 1; k * k <= s[i - 1]; k++)
+        {
+            if (s[i - 1] % k == 0)
+            {
+                divisor.push_back(k);
+                if (k != s[i - 1] / k && s[i - 1] % (s[i - 1] / k) == 0)
+                    divisor.push_back(s[i - 1] / k);
+            }
+        }
+        divisor.push_back(0);
+        sort(all(divisor), greater<ll>());
 
-    for (int i = 1; i < n; i++)
-    {
-        if (s[i] == 0)
+        for (int j = 0; j < sz(divisor) - 1; j++)
         {
-            dp[0][i] = min(dp[1][i - 1], min(dp[0][i - 1], dp[2][i - 1])) + 1;
-        }
-        else if (s[i] == 1)
-        {
-            dp[0][i] = min(dp[1][i - 1], min(dp[0][i - 1], dp[2][i - 1])) + 1;
-            dp[1][i] = min(dp[0][i - 1], dp[2][i - 1]);
-        }
-        else if (s[i] == 2)
-        {
-            dp[0][i] = min(dp[1][i - 1], min(dp[0][i - 1], dp[2][i - 1])) + 1;
-            dp[2][i] = min(dp[0][i - 1], dp[1][i - 1]);
-        }
-        else
-        {
-            dp[0][i] = min(dp[1][i - 1], min(dp[0][i - 1], dp[2][i - 1])) + 1;
-            dp[1][i] = min(dp[0][i - 1], dp[2][i - 1]);
-            dp[2][i] = min(dp[0][i - 1], dp[1][i - 1]);
+            if (divisor[j] > n || divisor[j] == 0)
+                continue;
+            dp[divisor[j]] += dp[divisor[j] - 1];
+            dp[divisor[j]] %= MOD;
         }
     }
 
-    cout << min(dp[0][n - 1], min(dp[1][n - 1], dp[2][n - 1]));
+    ll res = 0;
+    for (int i = 1; i <= n; i++)
+    {
+        res += dp[i];
+    }
+    cout << res % MOD;
 }
 
 int32_t main()

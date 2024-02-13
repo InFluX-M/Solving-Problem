@@ -37,6 +37,7 @@ ll modOp(ll a, ll b, int op)
         return (a % MOD) * (b % MOD) % MOD;
     }
 }
+int t = 1;
 
 void solve()
 {
@@ -45,63 +46,76 @@ void solve()
 
     vi s(n);
     for (int i = 0; i < n; i++)
-    {
         cin >> s[i];
+
+    vector<vi> GMQ(log2(n) + 2, vi(n, -1));
+
+    for (int i = 0; i < n; i++)
+        GMQ[0][i] = s[i];
+
+    for (int i = 1; i <= log2(n); i++)
+    {
+        for (int j = 0; j < n; j++)
+        {
+            GMQ[i][j] = __gcd(GMQ[i - 1][j], GMQ[i - 1][(j + (1 << (i - 1))) % n]);
+        }
     }
 
-    vector<vector<ll>> dp(3, vl(n, INT_MAX));
-    if (s[0] == 0)
+    vi p(n + 1);
+    p[0] = 0;
+    for (int i = 1; i <= n; i++)
     {
-        dp[0][0] = 1;
-    }
-    else if (s[0] == 1)
-    {
-        dp[0][0] = 1;
-        dp[1][0] = 0;
-    }
-    else if (s[0] == 2)
-    {
-        dp[0][0] = 1;
-        dp[2][0] = 0;
-    }
-    else
-    {
-        dp[0][0] = 1;
-        dp[1][0] = 0;
-        dp[2][0] = 0;
+        p[i] = log2(i);
     }
 
-    for (int i = 1; i < n; i++)
+    int l = 0, r = n - 1;
+
+    int res = n - 1;
+    unordered_set<int> pq;
+
+    while (l <= r)
     {
-        if (s[i] == 0)
+        int mid = (l + r) / 2;
+
+        for (int i = 0; i < n; i++)
         {
-            dp[0][i] = min(dp[1][i - 1], min(dp[0][i - 1], dp[2][i - 1])) + 1;
+            if (mid == 0)
+            {
+                pq.insert(GMQ[0][i]);
+            }
+            else
+            {
+                int pw = p[mid];
+                int r2 = i + mid - (1 << pw) + 1;
+                if (r2 < 0)
+                    r2 += n;
+                r2 %= n;
+
+                pq.insert(__gcd(GMQ[pw][i], GMQ[pw][r2]));
+            }
         }
-        else if (s[i] == 1)
+
+        if (sz(pq) <= 1)
         {
-            dp[0][i] = min(dp[1][i - 1], min(dp[0][i - 1], dp[2][i - 1])) + 1;
-            dp[1][i] = min(dp[0][i - 1], dp[2][i - 1]);
-        }
-        else if (s[i] == 2)
-        {
-            dp[0][i] = min(dp[1][i - 1], min(dp[0][i - 1], dp[2][i - 1])) + 1;
-            dp[2][i] = min(dp[0][i - 1], dp[1][i - 1]);
+            res = min(res, mid);
+            r = mid - 1;
         }
         else
         {
-            dp[0][i] = min(dp[1][i - 1], min(dp[0][i - 1], dp[2][i - 1])) + 1;
-            dp[1][i] = min(dp[0][i - 1], dp[2][i - 1]);
-            dp[2][i] = min(dp[0][i - 1], dp[1][i - 1]);
+            l = mid + 1;
         }
+
+        pq.clear();
     }
 
-    cout << min(dp[0][n - 1], min(dp[1][n - 1], dp[2][n - 1]));
+    cout << res << endl;
+    return;
 }
 
 int32_t main()
 {
-    int t;
-    t = 1;
+    fastio;
+    cin >> t;
     while (t--)
         solve();
 

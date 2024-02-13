@@ -43,65 +43,37 @@ void solve()
     int n;
     cin >> n;
 
-    vi s(n);
+    vl s(n);
+    ll sum = 0;
     for (int i = 0; i < n; i++)
     {
         cin >> s[i];
+        sum += s[i];
     }
 
-    vector<vector<ll>> dp(3, vl(n, INT_MAX));
-    if (s[0] == 0)
+    vector<vl> dp(2, vl(n, 0));
+    for (int i = 0; i < n; i++)
     {
-        dp[0][0] = 1;
-    }
-    else if (s[0] == 1)
-    {
-        dp[0][0] = 1;
-        dp[1][0] = 0;
-    }
-    else if (s[0] == 2)
-    {
-        dp[0][0] = 1;
-        dp[2][0] = 0;
-    }
-    else
-    {
-        dp[0][0] = 1;
-        dp[1][0] = 0;
-        dp[2][0] = 0;
+        dp[0][i] = s[i];
     }
 
     for (int i = 1; i < n; i++)
     {
-        if (s[i] == 0)
+        for (int j = 0; j < n - i; j++)
         {
-            dp[0][i] = min(dp[1][i - 1], min(dp[0][i - 1], dp[2][i - 1])) + 1;
-        }
-        else if (s[i] == 1)
-        {
-            dp[0][i] = min(dp[1][i - 1], min(dp[0][i - 1], dp[2][i - 1])) + 1;
-            dp[1][i] = min(dp[0][i - 1], dp[2][i - 1]);
-        }
-        else if (s[i] == 2)
-        {
-            dp[0][i] = min(dp[1][i - 1], min(dp[0][i - 1], dp[2][i - 1])) + 1;
-            dp[2][i] = min(dp[0][i - 1], dp[1][i - 1]);
-        }
-        else
-        {
-            dp[0][i] = min(dp[1][i - 1], min(dp[0][i - 1], dp[2][i - 1])) + 1;
-            dp[1][i] = min(dp[0][i - 1], dp[2][i - 1]);
-            dp[2][i] = min(dp[0][i - 1], dp[1][i - 1]);
+            ll u = s[j] - dp[(i - 1) % 2][j + 1];
+            ll v = s[j + i] - dp[(i - 1) % 2][j];
+            dp[i % 2][j] = (u > v) ? u : v;
         }
     }
 
-    cout << min(dp[0][n - 1], min(dp[1][n - 1], dp[2][n - 1]));
+    cout << (sum + dp[(n - 1) % 2][0]) / ll(2);
 }
 
 int32_t main()
 {
-    int t;
-    t = 1;
+    fastio;
+    int t = 1;
     while (t--)
         solve();
 

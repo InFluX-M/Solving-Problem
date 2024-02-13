@@ -43,46 +43,49 @@ void solve()
     int n;
     cin >> n;
 
-    vector<str> grid(n);
-    for (int i = 0; i < n; i++)
-    {
-        cin >> grid[i];
-    }
+    int q;
+    cin >> q;
 
-    vector<vi> dp(n, vi(n, 0));
-    int r = 1;
+    vi s(n);
     for (int i = 0; i < n; i++)
-    {
-        if (grid[0][i] == '*')
-            r = 0;
-        dp[0][i] = r;
-    }
+        cin >> s[i];
 
-    int c = 1;
+    vector<vi> rmq(log2(n) + 1, vi(n, -1));
     for (int i = 0; i < n; i++)
-    {
-        if (grid[i][0] == '*')
-            c = 0;
-        dp[i][0] = c;
-    }
+        rmq[0][i] = s[i];
 
-    for (int i = 1; i < n; i++)
+    for (int i = 1; i <= log2(n); i++)
     {
-        for (int j = 1; j < n; j++)
+        for (int j = 0; j <= n - (1 << i); j++)
         {
-            dp[i][j] = modOp(dp[i - 1][j], dp[i][j - 1], 0);
-            if (grid[i][j] == '*')
-                dp[i][j] = 0;
+            rmq[i][j] = min(rmq[i - 1][j], rmq[i - 1][j + (1 << i - 1)]);
         }
     }
 
-    cout << dp[n - 1][n - 1];
+    vi powN(n + 1);
+    powN[0] = -1;
+    for (int i = 1; i <= n; i++)
+    {
+        powN[i] = log2(i);
+    }
+
+        while (q--)
+    {
+        int l, r;
+        cin >> l >> r;
+
+        l--, r--;
+
+        int pN = powN[r - l + 1];
+
+        cout << min(rmq[pN][l], rmq[pN][r - (1 << pN) + 1]) << endl;
+    }
 }
 
 int32_t main()
 {
-    int t;
-    t = 1;
+    fastio;
+    int t = 1;
     while (t--)
         solve();
 

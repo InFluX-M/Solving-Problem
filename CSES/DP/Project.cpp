@@ -43,65 +43,44 @@ void solve()
     int n;
     cin >> n;
 
-    vi s(n);
+    vector<tuple<ll, ll, ll>> s;
     for (int i = 0; i < n; i++)
     {
-        cin >> s[i];
+        ll u, v, z;
+        cin >> u >> v >> z;
+        s.push_back(make_tuple(v, u, z));
     }
 
-    vector<vector<ll>> dp(3, vl(n, INT_MAX));
-    if (s[0] == 0)
+    sort(all(s));
+    vector<ll> end;
+    for (int i = 0; i < n; i++)
     {
-        dp[0][0] = 1;
+        end.push_back(get<0>(s[i]));
     }
-    else if (s[0] == 1)
-    {
-        dp[0][0] = 1;
-        dp[1][0] = 0;
-    }
-    else if (s[0] == 2)
-    {
-        dp[0][0] = 1;
-        dp[2][0] = 0;
-    }
-    else
-    {
-        dp[0][0] = 1;
-        dp[1][0] = 0;
-        dp[2][0] = 0;
-    }
+
+    vl dp(n, 0);
+    dp[0] = get<2>(s[0]);
 
     for (int i = 1; i < n; i++)
     {
-        if (s[i] == 0)
+        int idx = lower_bound(all(end), get<1>(s[i])) - end.begin();
+        if (idx == 0)
         {
-            dp[0][i] = min(dp[1][i - 1], min(dp[0][i - 1], dp[2][i - 1])) + 1;
-        }
-        else if (s[i] == 1)
-        {
-            dp[0][i] = min(dp[1][i - 1], min(dp[0][i - 1], dp[2][i - 1])) + 1;
-            dp[1][i] = min(dp[0][i - 1], dp[2][i - 1]);
-        }
-        else if (s[i] == 2)
-        {
-            dp[0][i] = min(dp[1][i - 1], min(dp[0][i - 1], dp[2][i - 1])) + 1;
-            dp[2][i] = min(dp[0][i - 1], dp[1][i - 1]);
+            dp[i] = max(get<2>(s[i]), dp[i - 1]);
         }
         else
         {
-            dp[0][i] = min(dp[1][i - 1], min(dp[0][i - 1], dp[2][i - 1])) + 1;
-            dp[1][i] = min(dp[0][i - 1], dp[2][i - 1]);
-            dp[2][i] = min(dp[0][i - 1], dp[1][i - 1]);
+            dp[i] = max(get<2>(s[i]) + dp[idx - 1], dp[i - 1]);
         }
     }
 
-    cout << min(dp[0][n - 1], min(dp[1][n - 1], dp[2][n - 1]));
+    cout << dp[n - 1];
 }
 
 int32_t main()
 {
-    int t;
-    t = 1;
+    fastio;
+    int t = 1;
     while (t--)
         solve();
 

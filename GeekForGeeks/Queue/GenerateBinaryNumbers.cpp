@@ -11,10 +11,6 @@ typedef vector<ll> vl;
 
 const ll mod = 1e9 + 7;
 
-#pragma GCC optimize("O3")
-#pragma GCC optimize("unroll-loops")
-#pragma GCC target("avx2")
-
 #define fastio                        \
     ios_base::sync_with_stdio(false); \
     cin.tie(NULL);                    \

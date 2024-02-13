@@ -40,66 +40,68 @@ ll modOp(ll a, ll b, int op)
 
 void solve()
 {
-    int n;
-    cin >> n;
+    string s;
+    cin >> s;
 
-    vi s(n);
+    int n = sz(s);
+    vector<vector<bool>> dp(n, vector<bool>(n, false));
+
     for (int i = 0; i < n; i++)
     {
-        cin >> s[i];
+        dp[0][i] = true;
     }
 
-    vector<vector<ll>> dp(3, vl(n, INT_MAX));
-    if (s[0] == 0)
+    for (int i = 0; i < n - 1; i++)
     {
-        dp[0][0] = 1;
-    }
-    else if (s[0] == 1)
-    {
-        dp[0][0] = 1;
-        dp[1][0] = 0;
-    }
-    else if (s[0] == 2)
-    {
-        dp[0][0] = 1;
-        dp[2][0] = 0;
-    }
-    else
-    {
-        dp[0][0] = 1;
-        dp[1][0] = 0;
-        dp[2][0] = 0;
+        if (s[i] == s[i + 1])
+            dp[1][i] = true;
     }
 
+    for (int i = 2; i < n; i++)
+    {
+        for (int j = 0; j < n - i; j++)
+        {
+            if (s[j] == s[j + i] && dp[i - 2][j + 1])
+                dp[i][j] = true;
+        }
+    }
+
+    vector<vi> c(n, vi(n, 0));
+    for (int i = 0; i < n; i++)
+        c[0][i] = 1;
     for (int i = 1; i < n; i++)
     {
-        if (s[i] == 0)
+        for (int j = 0; j < n; j++)
         {
-            dp[0][i] = min(dp[1][i - 1], min(dp[0][i - 1], dp[2][i - 1])) + 1;
-        }
-        else if (s[i] == 1)
-        {
-            dp[0][i] = min(dp[1][i - 1], min(dp[0][i - 1], dp[2][i - 1])) + 1;
-            dp[1][i] = min(dp[0][i - 1], dp[2][i - 1]);
-        }
-        else if (s[i] == 2)
-        {
-            dp[0][i] = min(dp[1][i - 1], min(dp[0][i - 1], dp[2][i - 1])) + 1;
-            dp[2][i] = min(dp[0][i - 1], dp[1][i - 1]);
-        }
-        else
-        {
-            dp[0][i] = min(dp[1][i - 1], min(dp[0][i - 1], dp[2][i - 1])) + 1;
-            dp[1][i] = min(dp[0][i - 1], dp[2][i - 1]);
-            dp[2][i] = min(dp[0][i - 1], dp[1][i - 1]);
+            c[i][j] = c[i - 1][j] + (dp[i][j]);
         }
     }
 
-    cout << min(dp[0][n - 1], min(dp[1][n - 1], dp[2][n - 1]));
+    vector<vi> res(n, vi(n, 0));
+    for (int i = 0; i < n; i++)
+    {
+        res[0][i] = c[0][i];
+        for (int j = i - 1; j >= 0; j--)
+        {
+            res[i - j][j] = res[i - j - 1][j + 1] + c[i - j][j];
+        }
+    }
+
+    int q;
+    cin >> q;
+
+    while (q--)
+    {
+        int l, r;
+        cin >> l >> r;
+
+        cout << res[r - l][l - 1] << nl;
+    }
 }
 
 int32_t main()
 {
+    fastio;
     int t;
     t = 1;
     while (t--)

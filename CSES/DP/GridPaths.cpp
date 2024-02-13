@@ -40,62 +40,43 @@ ll modOp(ll a, ll b, int op)
 
 void solve()
 {
-    int n;
-    cin >> n;
+    int n, m;
+    cin >> n >> m;
 
-    vi s(n);
+    vector<str> grid(n);
     for (int i = 0; i < n; i++)
     {
-        cin >> s[i];
+        cin >> grid[i];
     }
 
-    vector<vector<ll>> dp(3, vl(n, INT_MAX));
-    if (s[0] == 0)
+    vector<vi> dp(n, vi(m, 0));
+    int r = 1;
+    for (int i = 0; i < m; i++)
     {
-        dp[0][0] = 1;
+        if (grid[0][i] == '#')
+            r = 0;
+        dp[0][i] = r;
     }
-    else if (s[0] == 1)
+
+    int c = 1;
+    for (int i = 0; i < n; i++)
     {
-        dp[0][0] = 1;
-        dp[1][0] = 0;
-    }
-    else if (s[0] == 2)
-    {
-        dp[0][0] = 1;
-        dp[2][0] = 0;
-    }
-    else
-    {
-        dp[0][0] = 1;
-        dp[1][0] = 0;
-        dp[2][0] = 0;
+        if (grid[i][0] == '#')
+            c = 0;
+        dp[i][0] = c;
     }
 
     for (int i = 1; i < n; i++)
     {
-        if (s[i] == 0)
+        for (int j = 1; j < m; j++)
         {
-            dp[0][i] = min(dp[1][i - 1], min(dp[0][i - 1], dp[2][i - 1])) + 1;
-        }
-        else if (s[i] == 1)
-        {
-            dp[0][i] = min(dp[1][i - 1], min(dp[0][i - 1], dp[2][i - 1])) + 1;
-            dp[1][i] = min(dp[0][i - 1], dp[2][i - 1]);
-        }
-        else if (s[i] == 2)
-        {
-            dp[0][i] = min(dp[1][i - 1], min(dp[0][i - 1], dp[2][i - 1])) + 1;
-            dp[2][i] = min(dp[0][i - 1], dp[1][i - 1]);
-        }
-        else
-        {
-            dp[0][i] = min(dp[1][i - 1], min(dp[0][i - 1], dp[2][i - 1])) + 1;
-            dp[1][i] = min(dp[0][i - 1], dp[2][i - 1]);
-            dp[2][i] = min(dp[0][i - 1], dp[1][i - 1]);
+            dp[i][j] = modOp(dp[i - 1][j], dp[i][j - 1], 0);
+            if (grid[i][j] == '#')
+                dp[i][j] = 0;
         }
     }
 
-    cout << min(dp[0][n - 1], min(dp[1][n - 1], dp[2][n - 1]));
+    cout << dp[n - 1][m - 1];
 }
 
 int32_t main()
