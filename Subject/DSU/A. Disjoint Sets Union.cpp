@@ -39,64 +39,10 @@ ll modOp(ll a, ll b, int op)
 }
 
 const int mxn = 3e5 + 4;
-int par[mxn];
-int sze[mxn];
-int mx[mxn];
-int mn[mxn];
-
-int find(int u)
-{
-    return par[u] == -1 ? u : par[u] = find(par[u]);
-}
-
-void merge(int u, int v)
-{
-    if ((u = find(u)) == (v = find(v)))
-        return;
-
-    if (sze[u] < sze[v])
-        swap(u, v);
-
-    mx[u] = max(mx[u], mx[v]);
-    mn[u] = min(mn[u], mn[v]);
-
-    par[v] = u;
-    sze[u] += sze[v];
-}
 
 void solve()
 {
-    int n, m;
-    cin >> n >> m;
-    memset(par, -1, sizeof(par));
-    for (int i = 0; i < n; i++)
-    {
-        sze[i] = 1;
-        mn[i] = i;
-        mx[i] = i;
-    }
 
-    while (m--)
-    {
-        string s;
-        cin >> s;
-
-        if (s == "get")
-        {
-            int u;
-            cin >> u;
-            u--;
-            u = find(u);
-            cout << mn[u] + 1 << ' ' << mx[u] + 1 << ' ' << sze[u] << nl;
-        }
-        else
-        {
-            int u, v;
-            cin >> u >> v;
-            u--, v--;
-            merge(u, v);
-        }
-    }
 }
 
 int32_t main()

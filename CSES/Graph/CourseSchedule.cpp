@@ -8,6 +8,10 @@ typedef pair<int, int> pii;
 typedef pair<ll, ll> pll;
 typedef vector<int> vi;
 typedef vector<ll> vl;
+template <class T>
+using pq = priority_queue<T>;
+template <class T>
+using pqg = priority_queue<T, vector<T>, greater<T>>;
 
 const ll MOD = 1e9 + 7;
 #define nl "\n"
@@ -22,6 +26,8 @@ const ll MOD = 1e9 + 7;
 #define sz(x) (int)x.size()
 #define F first
 #define S second
+#define lb lower_bound
+#define ub upper_bound
 #define dbg(v) \
     cout << "Line(" << __LINE__ << ") -> " << #v << " = " << (v) << endl;
 
@@ -38,72 +44,52 @@ ll modOp(ll a, ll b, int op)
     }
 }
 
-const int mxn = 2500;
-bool vis[mxn];
+const int mxn = 1e5 + 4;
+vector<int> g[mxn];
+vector<int> visited(mxn, 0);
+vector<int> res;
 
-vector<ll> g[mxn];
-void dfs(ll u)
+bool topologicalSort(int u)
 {
-    vis[u] = true;
-    for(ll v : g[u])
+    visited[u] = 1;
+    for (int v : g[u])
     {
-        if(!vis[v])
-            dfs(v);
+        if (visited[v] == 1)
+        {
+            cout << "IMPOSSIBLE";
+            return true;
+        }
+        if (visited[v] == 0 && topologicalSort(v))
+            return true;
     }
+    visited[u] = 2;
+    res.pb(u);
+    return false;
 }
 
 void solve()
 {
     int n, m;
     cin >> n >> m;
-    fill_n(vis, mxn, false);
 
-    vector<tuple<ll, ll, ll>> s;
     for (int i = 0; i < m; i++)
     {
-        ll u, v, w;
-        cin >> u >> v >> w;
-
+        int u, v;
+        cin >> u >> v;
         u--, v--;
-        g[v].pb(u);
-
-        w *= -1;
-
-        s.pb(make_tuple(u, v, w));
+        g[u].pb(v);
     }
 
-    dfs(n - 1);
-
-    vector<ll> dist(n, 1e18);
-    dist[0] = 0;
-
-    for (int i = 1; i < n; i++)
+    for(int i = 0; i < n; i++)
     {
-        for (int j = 0; j < m; j++)
-        {
-            ll u = get<0>(s[j]);
-            ll v = get<1>(s[j]);
-            ll weight = get<2>(s[j]);
-            if (dist[u] != 1e18 && dist[u] + weight < dist[v])
-                dist[v] = dist[u] + weight;
-        }
+        if(visited[i] == 0 && topologicalSort(i))
+            return;
     }
 
-    bool valid = true;
-    for (int i = 0; i < m; i++)
-    {
-        int u = get<0>(s[i]);
-        int v = get<1>(s[i]);
-        int weight = get<2>(s[i]);
-        if (vis[u] && vis[v] && dist[u] != 1e18 && dist[u] + weight < dist[v])
-        {
-            dist[v] = dist[u] + weight;
-            valid = false;
-            break;
-        }
-    }
+    reverse(all(res));
 
-    cout << ((valid) ? -1 * dist[n - 1] : -1);
+    for(int i : res)
+        cout << i + 1 << " ";
 }
 
 int32_t main()

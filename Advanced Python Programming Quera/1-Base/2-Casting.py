@@ -1,1 +1,0 @@
-print(int(float(input()) + float(input())))

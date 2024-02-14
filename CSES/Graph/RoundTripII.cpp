@@ -38,72 +38,74 @@ ll modOp(ll a, ll b, int op)
     }
 }
 
-const int mxn = 2500;
-bool vis[mxn];
+const int mxn = 1e5;
 
-vector<ll> g[mxn];
-void dfs(ll u)
+int n;
+vector<int> g[mxn];
+vector<int> visited(mxn, 0);
+vector<int> parent(mxn, -1);
+int cycle_start = -1, cycle_end = -1;
+
+bool dfs(int u, int par)
 {
-    vis[u] = true;
-    for(ll v : g[u])
+    visited[u] = 1;
+    for (int v : g[u])
     {
-        if(!vis[v])
-            dfs(v);
+        if (visited[v] == 1)
+        {
+            cycle_end = u;
+            cycle_start = v;
+            return true;
+        }
+        if (visited[v] == 0)
+        {
+            parent[v] = u;
+            if (dfs(v, parent[v]))
+                return true;
+        }
     }
+    visited[u] = 2;
+    return false;
 }
-
 void solve()
 {
     int n, m;
     cin >> n >> m;
-    fill_n(vis, mxn, false);
 
-    vector<tuple<ll, ll, ll>> s;
     for (int i = 0; i < m; i++)
     {
-        ll u, v, w;
-        cin >> u >> v >> w;
-
+        int u, v;
+        cin >> u >> v;
         u--, v--;
-        g[v].pb(u);
-
-        w *= -1;
-
-        s.pb(make_tuple(u, v, w));
+        g[u].pb(v);
     }
 
-    dfs(n - 1);
+    parent.assign(n, -1);
 
-    vector<ll> dist(n, 1e18);
-    dist[0] = 0;
-
-    for (int i = 1; i < n; i++)
+    for (int v = 0; v < n; v++)
     {
-        for (int j = 0; j < m; j++)
-        {
-            ll u = get<0>(s[j]);
-            ll v = get<1>(s[j]);
-            ll weight = get<2>(s[j]);
-            if (dist[u] != 1e18 && dist[u] + weight < dist[v])
-                dist[v] = dist[u] + weight;
-        }
-    }
-
-    bool valid = true;
-    for (int i = 0; i < m; i++)
-    {
-        int u = get<0>(s[i]);
-        int v = get<1>(s[i]);
-        int weight = get<2>(s[i]);
-        if (vis[u] && vis[v] && dist[u] != 1e18 && dist[u] + weight < dist[v])
-        {
-            dist[v] = dist[u] + weight;
-            valid = false;
+        if (!visited[v] && dfs(v, parent[v]))
             break;
-        }
     }
 
-    cout << ((valid) ? -1 * dist[n - 1] : -1);
+    if (cycle_start == -1)
+    {
+        cout << "IMPOSSIBLE" << endl;
+    }
+    else
+    {
+        vector<int> cycle;
+
+        cycle.push_back(cycle_start);
+        for (int v = cycle_end; v != cycle_start; v = parent[v])
+            cycle.push_back(v);
+        cycle.push_back(cycle_start);
+        cout << sz(cycle) << '\n';
+        reverse(all(cycle));
+        for (int v : cycle)
+            cout << v + 1 << " ";
+        cout << endl;
+    }
 }
 
 int32_t main()

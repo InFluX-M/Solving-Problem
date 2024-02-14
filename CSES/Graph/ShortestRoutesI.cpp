@@ -40,8 +40,8 @@ ll modOp(ll a, ll b, int op)
 
 void solve()
 {
-    int n, m;
-    cin >> n >> m;
+    int n, m, k;
+    cin >> n >> m >> k;
 
     vector<pii> g[n];
     for (int i = 0; i < m; i++)
@@ -52,8 +52,8 @@ void solve()
         g[u].pb({v, w});
     }
 
-    vector<ll> dis(n, 1e15);
-    vector<bool> vis(n, false);
+    vector<vl> dis(n, 1e15);
+    vector<ll> cnt(n);
     priority_queue<pll, vector<pll>, greater<pll>> pq;
     pq.push({0, 0});
 
@@ -62,10 +62,10 @@ void solve()
         pll u = pq.top();
         pq.pop();
 
-        if (vis[u.S])
+        if (cnt[u.S] == k)
             continue;
 
-        vis[u.S] = true;
+        cnt[u.S]++;
         dis[u.S] = u.F;
 
         for (pii v : g[u.S])

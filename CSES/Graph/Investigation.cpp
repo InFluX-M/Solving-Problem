@@ -9,7 +9,7 @@ typedef pair<ll, ll> pll;
 typedef vector<int> vi;
 typedef vector<ll> vl;
 template <class T>
-using pql = priority_queue<T>;
+using pq = priority_queue<T>;
 template <class T>
 using pqg = priority_queue<T, vector<T>, greater<T>>;
 
@@ -44,23 +44,13 @@ ll modOp(ll a, ll b, int op)
     }
 }
 
-const int mxn = 1e5;
-
-vector<pair<int, int>> g[mxn], gT[mxn];
-ll dis[mxn];
-ll disT[mxn];
-bool vis[mxn];
-bool visT[mxn];
-pqg<pair<ll, int>> pq;
-vector<tuple<int, int, int>> edges;
+const int mxn = 1e5 + 4;
+vector<pii> g[mxn];
 
 void solve()
 {
     int n, m;
     cin >> n >> m;
-
-    fill_n(dis, n, 1e18);
-    fill_n(disT, n, 1e18);
 
     for (int i = 0; i < m; i++)
     {
@@ -68,63 +58,50 @@ void solve()
         cin >> u >> v >> w;
         u--, v--;
         g[u].pb({v, w});
-        gT[v].pb({u, w});
-        edges.pb(make_tuple(u, v, w));
     }
 
-    dis[0] = 0;
-    pq.push({0, 0});
+    vl routes(n, 0);
+    vl min_flight(n, 0);
+    vl max_flight(n, 0);
+    vl dist(n, 1e18);
+    vector<bool> vis(n, false);
+    pqg<pll> pqM;
 
-    while (!pq.empty())
+    dist[0] = 0;
+    min_flight[0] = 0;
+    max_flight[0] = 0;
+    routes[0] = 1;
+    pqM.push({0, 0});
+
+    while (pqM.size())
     {
-        pair<ll, int> u = pq.top();
-        pq.pop();
-
-        if (vis[u.S])
+        pll p = pqM.top();
+        pqM.pop();
+        int u = p.S;
+        if (vis[u])
             continue;
-
-        vis[u.S] = true;
-
-        for (pii v : g[u.S])
+        vis[u] = true;
+        for (pii &v : g[u])
         {
-            if (dis[v.F] > dis[u.S] + v.S)
+            if (dist[v.F] > dist[u] + v.S)
             {
-                dis[v.F] = dis[u.S] + v.S;
-                pq.push({dis[v.F], v.F});
+                dist[v.F] = dist[u] + v.S;
+                min_flight[v.F] = min_flight[u] + 1;
+                max_flight[v.F] = max_flight[u] + 1;
+                routes[v.F] = routes[u];
+                pqM.push({dist[v.F], v.F});
+            }
+            else if (dist[v.F] == dist[u] + v.S)
+            {
+                min_flight[v.F] = min(min_flight[v.F], min_flight[u] + 1);
+                max_flight[v.F] = max(max_flight[v.F], max_flight[u] + 1);
+                routes[v.F] = modOp(routes[v.F], routes[u], 0);
+                pqM.push({dist[v.F], v.F});
             }
         }
     }
 
-    disT[n - 1] = 0;
-    pq.push({0, n - 1});
-
-    while (!pq.empty())
-    {
-        pair<ll, int> u = pq.top();
-        pq.pop();
-
-        if (visT[u.S])
-            continue;
-
-        visT[u.S] = true;
-
-        for (pii v : gT[u.S])
-        {
-            if (disT[v.F] > disT[u.S] + v.S)
-            {
-                disT[v.F] = disT[u.S] + v.S;
-                pq.push({disT[v.F], v.F});
-            }
-        }
-    }
-
-    ll aim = 1e18;
-
-    for (int u = 0; u < n; u++)
-        for (pii v : g[u])
-            aim = min(aim, dis[u] + disT[v.F] + v.S / 2);
-
-    cout << aim;
+    cout << dist[n - 1] << " " << routes[n - 1] << " " << min_flight[n - 1] << " " << max_flight[n - 1] << nl;
 }
 
 int32_t main()

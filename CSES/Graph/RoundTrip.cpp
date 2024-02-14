@@ -39,33 +39,32 @@ ll modOp(ll a, ll b, int op)
 }
 
 const int mxn = 1e5;
+
+int n;
 vector<int> g[mxn];
-vector<int> p(mxn, -1);
-vector<bool> vis(mxn, false);
-bool cycle = false;
-int x, y;
+vector<bool> visited(mxn, false);
+vector<int> parent(mxn, -1);
+int cycle_start = -1, cycle_end = -1;
 
-void dfs(int u)
+bool dfs(int u, int par)
 {
-    vis[u] = true;
-
+    visited[u] = true;
     for (int v : g[u])
     {
-        if (!vis[v])
+        if (v == par)
+            continue;
+        if (visited[v])
         {
-            p[v] = u;
-            dfs(v);
+            cycle_end = u;
+            cycle_start = v;
+            return true;
         }
-        else if (v != p[u])
-        {
-            cycle = true;
-            x = v;
-            y = u;
-            return;
-        }
+        parent[v] = u;
+        if (dfs(v, parent[v]))
+            return true;
     }
+    return false;
 }
-
 void solve()
 {
     int n, m;
@@ -80,73 +79,31 @@ void solve()
         g[v].pb(u);
     }
 
-    for (int i = 0; i < n; i++)
+    visited.assign(n, false);
+    parent.assign(n, -1);
+
+    for (int v = 0; v < n; v++)
     {
-        if (!vis[i])
-        {
-            p[i] = -1;
-            dfs(i);
-        }
-        if (cycle)
-        {
-            int z;
-
-            vector<bool> lca(n, false);
-            vi r;
-            int u = x;
-            while (u != -1)
-            {
-                lca[u] = true;
-                u = p[u];
-            }
-
-            u = y;
-            while (u != -1)
-            {
-                if (lca[u])
-                {
-                    z = u;
-                    break;
-                }
-                lca[u] = true;
-                u = p[u];
-            }
-
-            u = x;
-            while (u != z)
-            {
-                r.pb(u);
-                u = p[u];
-            }
-
-            r.pb(z);
-            stack<int> s;
-            u = y;
-            while (u != z)
-            {
-                s.push(u);
-                u = p[u];
-            }
-
-            while (!s.empty())
-            {
-                r.push_back(s.top());
-                s.pop();
-            }
-
-            r.pb(x);
-
-            cout << sz(r) << nl;
-            for (int m : r)
-            {
-                cout << m + 1 << ' ';
-            }
-
-            return;
-        }
+        if (!visited[v] && dfs(v, parent[v]))
+            break;
     }
 
-    cout << "IMPOSSIBLE";
+    if (cycle_start == -1)
+    {
+        cout << "IMPOSSIBLE" << endl;
+    }
+    else
+    {
+        vector<int> cycle;
+        cycle.push_back(cycle_start);
+        for (int v = cycle_end; v != cycle_start; v = parent[v])
+            cycle.push_back(v);
+        cycle.push_back(cycle_start);
+        cout << sz(cycle) << '\n';
+        for (int v : cycle)
+            cout << v + 1 << " ";
+        cout << endl;
+    }
 }
 
 int32_t main()

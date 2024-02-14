@@ -38,6 +38,24 @@ ll modOp(ll a, ll b, int op)
     }
 }
 
+const int mxn = 2500;
+bool vis[mxn];
+vector<pii> g[mxn];
+vector<int> gu[mxn];
+vector<vi> comps;
+vi comp;
+
+void dfs(int u)
+{
+    vis[u] = true;
+    comp.pb(u);
+    for (int v : gu[u])
+    {
+        if (!vis[v])
+            dfs(v);
+    }
+}
+
 void solve()
 {
     int n, m;
@@ -49,65 +67,89 @@ void solve()
         int u, v, w;
         cin >> u >> v >> w;
         u--, v--;
-        s.pb(make_tuple(u, v, w));
+        g[u].pb({v, w});
+        gu[u].pb(v);
+        gu[v].pb(u);
     }
 
-    vector<ll> dist(n, 1e18);
-    vi ps(n, -1);
-    dist[0] = 0;
-
-    for (int i = 1; i < n; i++)
+    for (int i = 0; i < n; i++)
     {
-        for (int j = 0; j < m; j++)
+        if (!vis[i])
         {
-            int u = get<0>(s[j]);
-            int v = get<1>(s[j]);
-            int weight = get<2>(s[j]);
-            if (dist[u] != 1e18 && dist[u] + weight < dist[v])
+            dfs(i);
+            comps.pb(comp);
+            comp.clear();
+        }
+    }
+
+    for (int i = 0; i < sz(comps); i++)
+    {
+        map<int, ll> dist;
+        for (int u : comps[i])
+            dist[u] = 1e18;
+
+        map<int, int> ps;
+        for (int u : comps[i])
+            ps[u] = -1;
+
+        dist[comps[i][0]] = 0;
+        for (int j = 1; j < sz(comps[i]); j++)
+        {
+            for (int u : comps[i])
             {
-                dist[v] = dist[u] + weight;
-                ps[v] = u;
+                for (pii v : g[u])
+                {
+                    if (dist[u] != 1e18 && dist[u] + v.S < dist[v.F])
+                    {
+                        dist[v.F] = dist[u] + v.S;
+                        ps[v.F] = u;
+                    }
+                }
             }
         }
-    }
 
-    int x = -1;
+        int x = -1;
 
-    for (int i = 0; i < m; i++)
-    {
-        int u = get<0>(s[i]);
-        int v = get<1>(s[i]);
-        int weight = get<2>(s[i]);
-        if (dist[u] != 1e18 && dist[u] + weight < dist[v])
+        for (int u : comps[i])
         {
-            dist[v] = dist[u] + weight;
-            ps[v] = u;
-            x = v;
+            for (pii v : g[u])
+            {
+                if (dist[u] != 1e18 && dist[u] + v.S < dist[v.F])
+                {
+                    dist[v.F] = dist[u] + v.S;
+                    ps[v.F] = u;
+                    x = v.F;
+                }
+            }
+        }
+
+        if (x == -1)
+        {
+            continue;
+        }
+        else
+        {
+            for (int j = 0; j < sz(comps[i]); ++j)
+                x = ps[x];
+
+            vector<int> cycle;
+            for (int v = x;; v = ps[v])
+            {
+                cycle.push_back(v);
+                if (v == x && cycle.size() > 1)
+                    break;
+            }
+            reverse(cycle.begin(), cycle.end());
+            cout << "YES\n";
+
+            for (int t : cycle)
+                cout << t + 1 << ' ';
+
+            return;
         }
     }
 
-    if (x == -1)
-    {
-        cout << "NO\n";
-    }
-    else
-    {
-        for (int i = 0; i < n; ++i)
-            x = ps[x];
-
-        vector<int> cycle;
-        for (int v = x;; v = ps[v])
-        {
-            cycle.push_back(v);
-            if (v == x && cycle.size() > 1)
-                break;
-        }
-        reverse(cycle.begin(), cycle.end());
-        cout << "YES\n";
-
-        for (int t : cycle)
-            cout << t + 1 << ' ';
-    }
+    cout << "NO";
 }
 
 int32_t main()
